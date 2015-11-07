@@ -1,0 +1,78 @@
+#!/usr/bin/env python 
+# vim:fileencoding=utf-8
+
+""" [NAME] gistcli
+
+[DESCRIPTION] gist command line interface
+see:
+  https://developer.github.com/v3/gists/
+  https://gist.github.com/caspyin/2288960
+"""
+from datetime import datetime
+from argparse import ArgumentParser, FileType
+import warnings
+import os, sys, io
+import traceback
+import importlib
+
+__author__  = 'holly'
+__version__ = '0.1'
+
+DESCRIPTION = 'gist command line interface'
+
+parser = ArgumentParser(description=DESCRIPTION)
+parser.add_argument('--version', '-v', action='version', version='%(prog)s ' + __version__)
+
+subparsers = parser.add_subparsers(help='sub-command help', dest='subparser_name')
+
+list_parser = subparsers.add_parser('list', help='list help')
+list_parser.add_argument('--user', '-u', action='store', metavar='USER', help='github your account name')
+list_parser.add_argument('--auth-token', '-T', action='store', metavar='AUTH_TOKEN', help='your github api access token, if you want private gist')
+list_parser.add_argument('--number', '-n', action='store_true', help='number of your gists')
+list_parser.add_argument('--no-headers', action='store_true', help='print no header line at all')
+list_parser.add_argument('--verbose', action='store_true', help='verbose output')
+
+show_parser = subparsers.add_parser('show', help='show help')
+show_parser.add_argument('--user', '-u', action='store', metavar='USER', help='github your account name')
+show_parser.add_argument('--auth-token', '-T', action='store', metavar='AUTH_TOKEN', help='your github api access token, if you want private gist')
+show_parser.add_argument('--no-headers', action='store_false', help='print no header line at all')
+
+show_parser.add_argument('--name', '-n', action='store', required=True, metavar='FILE_NAME', help='gist file name')
+show_parser.add_argument('--verbose', action='store_true', help='verbose output')
+
+fetch_parser = subparsers.add_parser('fetch', help='fetch help')
+fetch_parser.add_argument('--user', '-u', action='store', metavar='USER', help='github your account name')
+fetch_parser.add_argument('--auth-token', '-T', action='store', metavar='AUTH_TOKEN', help='your github api access token, if you want private gist')
+fetch_parser.add_argument('--name', '-n', action='store', required=True, metavar='FILE_NAME', help='gist file name')
+fetch_parser.add_argument('--output', '-o', type=FileType('w'), metavar='FILE_NAME', help='write to FILE instead of stdout')
+fetch_parser.add_argument('--remote-name', '-O', action='store_true', help='write output to a file named as the remote file')
+fetch_parser.add_argument('--add-executable', '-x', action='store_true', help='add executable mode. enable --output or --remote-name option')
+fetch_parser.add_argument('--verbose', action='store_true', help='verbose output')
+
+exec_parser = subparsers.add_parser('exec', help='fetch help')
+exec_parser.add_argument('--user', '-u', action='store', metavar='USER', help='github your account name')
+exec_parser.add_argument('--auth-token', '-T', action='store', metavar='AUTH_TOKEN', help='your github api access token, if you want private gist')
+exec_parser.add_argument('--name', '-n', action='store', required=True, metavar='FILE_NAME', help='gist file name')
+exec_parser.add_argument('--verbose', action='store_true', help='verbose output')
+
+args = parser.parse_args()
+
+def main():
+    """ [FUNCTIONS] method or functon description
+    """
+    try :
+        mod = importlib.import_module("gistcli.{0}".format(args.subparser_name))
+        cli = mod.Cli(args)
+        cli.run()
+    except ImportError as e:
+        parser.print_help()
+    except Exception as e:
+        print("Exception: {0}".format(e), file=sys.stderr)
+        cli.verbose_message("\n=============\n{0}=============\n".format(traceback.format_exc()))
+        sys.exit(1)
+    else:
+        cli.verbose_message("gistcli.{0} success".format(args.subparser_name))
+
+if __name__ == "__main__":
+    main()
+
