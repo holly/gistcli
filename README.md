@@ -8,22 +8,34 @@ gist command line interface
 ## help
 
 ```shell
-usage: gistcli [-h] [--version] {list,show,fetch,exec} ...
+usage: gistcli delete [-h] [--user USER] [--auth-token AUTH_TOKEN] --id ID
+                      [--verbose]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --user USER, -u USER  github your account name
+  --auth-token AUTH_TOKEN, -T AUTH_TOKEN
+                        your github api access token
+  --id ID, -I ID        gist id
+  --verbose             verbose output
+holly@phantom ~/gistcli/bin (feature/add-delete)*$ gistcli -h
+usage: gistcli [-h] [--version] {list,show,fetch,exec,post,delete} ...
 
 gist command line interface
 
 positional arguments:
-  {list,show,fetch,exec}
+  {list,show,fetch,exec,post,delete}
                         sub-command help
     list                list help
     show                show help
     fetch               fetch help
     exec                fetch help
+    post                post help
+    delete              delete help
 
 optional arguments:
   -h, --help            show this help message and exit
   --version, -v         show program's version number and exit
-
 ```
 
 
@@ -184,6 +196,66 @@ optional arguments:
 ```shell
 $ gistcli exec -u holly -n check_drbd.sh 
 # display check_drbd.sh execute result
+```
+
+### post
+
+```shell
+usage: gistcli post [-h] [--user USER] [--auth-token AUTH_TOKEN] --name
+                    FILE_NAME [--description DESCRIPTION] [--private]
+                    [--verbose]
+                    [INFILE]
+
+positional arguments:
+  INFILE                post target file or stdin data
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --user USER, -u USER  github your account name
+  --auth-token AUTH_TOKEN, -T AUTH_TOKEN
+                        your github api access token
+  --name FILE_NAME, -n FILE_NAME
+                        gist file name
+  --description DESCRIPTION, -d DESCRIPTION
+                        gist file description
+  --private, -p         private gist
+  --verbose             verbose output
+```
+
+*execute*
+
+```shell
+# from stdin
+$ gistcli post -u holly -n test.txt <test.txt
+# or from file
+$ gistcli post -u holly -n test.txt test.txt
+```
+
+*result*
+```shell
+# unique id
+0b436445dbc534beca38
+```
+
+### delete
+
+```shell
+usage: gistcli delete [-h] [--user USER] [--auth-token AUTH_TOKEN] --id ID
+                      [--verbose]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --user USER, -u USER  github your account name
+  --auth-token AUTH_TOKEN, -T AUTH_TOKEN
+                        your github api access token
+  --id ID, -I ID        gist id
+  --verbose             verbose output
+```
+
+*execute*
+
+```shell
+$ gistcli delete -u holly --id 0b436445dbc534beca38
 ```
 
 # install

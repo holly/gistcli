@@ -14,9 +14,10 @@ import warnings
 import os, sys, io
 import traceback
 import importlib
+import urllib
 
 __author__  = 'holly'
-__version__ = '0.1'
+__version__ = '0.2'
 
 DESCRIPTION = 'gist command line interface'
 
@@ -55,10 +56,25 @@ exec_parser.add_argument('--auth-token', '-T', action='store', metavar='AUTH_TOK
 exec_parser.add_argument('--name', '-n', action='store', required=True, metavar='FILE_NAME', help='gist file name')
 exec_parser.add_argument('--verbose', action='store_true', help='verbose output')
 
+post_parser = subparsers.add_parser('post', help='post help')
+post_parser.add_argument('--user', '-u', action='store', metavar='USER', help='github your account name')
+post_parser.add_argument('--auth-token', '-T', action='store', metavar='AUTH_TOKEN', help='your github api access token')
+post_parser.add_argument('--name', '-n', action='store', required=True, metavar='FILE_NAME', help='gist file name')
+post_parser.add_argument('--description', '-d', action='store', metavar='DESCRIPTION', help='gist file description')
+post_parser.add_argument('--private', '-p', action='store_true', help='private gist')
+post_parser.add_argument('--verbose', action='store_true', help='verbose output')
+post_parser.add_argument('infile', type=FileType("r"), nargs="?", default=sys.stdin, metavar='INFILE', help='post target file or stdin data')
+
+delete_parser = subparsers.add_parser('delete', help='delete help')
+delete_parser.add_argument('--user', '-u', action='store', metavar='USER', help='github your account name')
+delete_parser.add_argument('--auth-token', '-T', action='store', metavar='AUTH_TOKEN', help='your github api access token')
+delete_parser.add_argument('--id', '-I', action='store', required=True, metavar='ID', help='gist id')
+delete_parser.add_argument('--verbose', action='store_true', help='verbose output')
+
 args = parser.parse_args()
 
 def main():
-    """ [FUNCTIONS] method or functon description
+    """ [FUNCTIONS] method or function description
     """
     try :
         mod = importlib.import_module("gistcli.{0}".format(args.subparser_name))
@@ -66,9 +82,13 @@ def main():
         cli.run()
     except ImportError as e:
         parser.print_help()
+    except urllib.error.HTTPError as e:
+        print("Exception: {0}".format(e), file=sys.stderr)
+        cli.verbose_message("\n=============\n{0}\n=============".format(e.read().decode("utf-8")))
+        sys.exit(1)
     except Exception as e:
         print("Exception: {0}".format(e), file=sys.stderr)
-        cli.verbose_message("\n=============\n{0}=============\n".format(traceback.format_exc()))
+        cli.verbose_message("\n=============\n{0}\n=============".format(traceback.format_exc()))
         sys.exit(1)
     else:
         cli.verbose_message("gistcli.{0} success".format(args.subparser_name))
