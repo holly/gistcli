@@ -40,11 +40,23 @@ class Skel(object):
     def json_loads(self, data):
         return json.loads(data)
 
-    def make_response(self, url):
+    def json_dumps(self, payload):
+        return json.dumps(payload)
+
+    def make_response(self, url, headers=None, data=None):
         req = urllib.request.Request(url=url)
         if self.args.auth_token:
             req.add_header("Authorization", "token {0}".format(self.args.auth_token))
-        res = urllib.request.urlopen(req)
+
+        if isinstance(headers, dict):
+            for key, val in headers.items():
+                req.add_header(key, val)
+
+        if isinstance(data, str):
+            data = data.encode("utf-8")
+            req.add_header("Content-Length", len(data))
+
+        res = urllib.request.urlopen(req, data)
         return res
 
     def verbose_message(self, message):
