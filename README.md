@@ -31,10 +31,24 @@ optional arguments:
 
 ### list
 
+```shell
+usage: gistcli list [-h] [--user USER] [--auth-token AUTH_TOKEN] [--number]
+                    [--no-headers] [--verbose]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --user USER, -u USER  github your account name
+  --auth-token AUTH_TOKEN, -T AUTH_TOKEN
+                        your github api access token, if you want private gist
+  --number, -n          number of your gists
+  --no-headers          print no header line at all
+  --verbose             verbose output
+```
+
 *execute*
 
 ```shell
-$ gistcli -u holly 
+$ gistcli list -u holly 
 ```
 
 *result*
@@ -57,6 +71,22 @@ aa18fd518be1205f2753    Check server                        Public    Text      
 ... and more ...
 ```
 ### show
+
+```shell
+usage: gistcli show [-h] [--user USER] [--auth-token AUTH_TOKEN]
+                    [--no-headers] --name FILE_NAME [--verbose]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --user USER, -u USER  github your account name
+  --auth-token AUTH_TOKEN, -T AUTH_TOKEN
+                        your github api access token, if you want private gist
+  --no-headers          print no header line at all
+  --name FILE_NAME, -n FILE_NAME
+                        gist file name
+  --verbose             verbose output
+```
+
 
 [check_drbd.sh](https://gist.github.com/holly/0b3c96d3795957bfb1f5 "check_drbd.sh")
 
@@ -99,12 +129,32 @@ echo "$(date +'%Y/%m/%d %H:%M:%S') check_drbd role:${DRBD_ROLE_STATUS} dstate:${
 exit $EXIT_CODE
 ```
 
-### fetch (with add-executable)
+### fetch 
+
+```shell
+usage: gistcli fetch [-h] [--user USER] [--auth-token AUTH_TOKEN] --name
+                     FILE_NAME [--output FILE_NAME] [--remote-name]
+                     [--add-executable] [--verbose]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --user USER, -u USER  github your account name
+  --auth-token AUTH_TOKEN, -T AUTH_TOKEN
+                        your github api access token, if you want private gist
+  --name FILE_NAME, -n FILE_NAME
+                        gist file name
+  --output FILE_NAME, -o FILE_NAME
+                        write to FILE instead of stdout
+  --remote-name, -O     write output to a file named as the remote file
+  --add-executable, -x  add executable mode. enable --output or --remote-name
+                        option
+  --verbose             verbose output
+```
 
 *execute*
 
 ```shell
-$ gistcli fetch -u holly -n check_drbd.sh -O -x
+$ gistcli fetch -u holly -n check_drbd.sh -O 
 ```
 
 *result*
@@ -115,10 +165,25 @@ $ ls -Al check_drbd.sh
 
 ### execute
 
+```shell
+usage: gistcli exec [-h] [--user USER] [--auth-token AUTH_TOKEN] --name
+                    FILE_NAME [--verbose]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --user USER, -u USER  github your account name
+  --auth-token AUTH_TOKEN, -T AUTH_TOKEN
+                        your github api access token, if you want private gist
+  --name FILE_NAME, -n FILE_NAME
+                        gist file name
+  --verbose             verbose output
+```
+
 *execute*
 
 ```shell
 $ gistcli exec -u holly -n check_drbd.sh 
+# display check_drbd.sh execute result
 ```
 
 # install
