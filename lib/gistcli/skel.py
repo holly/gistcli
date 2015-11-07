@@ -43,7 +43,7 @@ class Skel(object):
     def json_dumps(self, payload):
         return json.dumps(payload)
 
-    def make_response(self, url, headers=None, data=None):
+    def make_response(self, url, headers=None, data=None, method=None):
         req = urllib.request.Request(url=url)
         if self.args.auth_token:
             req.add_header("Authorization", "token {0}".format(self.args.auth_token))
@@ -55,6 +55,9 @@ class Skel(object):
         if isinstance(data, str):
             data = data.encode("utf-8")
             req.add_header("Content-Length", len(data))
+
+        if isinstance(method, str):
+            req.get_method = lambda: method
 
         res = urllib.request.urlopen(req, data)
         return res
