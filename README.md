@@ -186,6 +186,45 @@ $ gistcli exec -u holly -n check_drbd.sh
 # display check_drbd.sh execute result
 ```
 
+### post
+
+```shell
+usage: gistcli post [-h] [--user USER] [--auth-token AUTH_TOKEN] --name
+                    FILE_NAME [--description DESCRIPTION] [--private]
+                    [--verbose]
+                    [INFILE]
+
+positional arguments:
+  INFILE                post target file or stdin data
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --user USER, -u USER  github your account name
+  --auth-token AUTH_TOKEN, -T AUTH_TOKEN
+                        your github api access token
+  --name FILE_NAME, -n FILE_NAME
+                        gist file name
+  --description DESCRIPTION, -d DESCRIPTION
+                        gist file description
+  --private, -p         private gist
+  --verbose             verbose output
+```
+
+*execute*
+
+```shell
+# from stdin
+$ gistcli post -u holly -n test.txt <test.txt
+# or from file
+$ gistcli post -u holly -n test.txt test.txt
+```
+
+*result*
+```shell
+# unique id
+0b436445dbc534beca38
+```
+
 # install
 
 ## pip install
