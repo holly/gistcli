@@ -25,10 +25,12 @@ class Skel(object):
         config = ConfigParser()
         config.read_string("[root]\n" + open(self.__class__.CONFIG_PATH, "r").read())
 
-        if self.args.user is None and "user" in config["root"]:
-            self.args.user = config["root"]["user"]
-        if self.args.auth_token is None and "auth_token" in config["root"]:
-            self.args.auth_token = config["root"]["auth_token"]
+        if hasattr(self.args, "user"):
+            if self.args.user is None and "user" in config["root"]:
+                self.args.user = config["root"]["user"]
+        if hasattr(self.args, "auth_token"):
+            if self.args.auth_token is None and "auth_token" in config["root"]:
+                self.args.auth_token = config["root"]["auth_token"]
 
     def execute(self):
         raise NotImplementedError("You have to inherit the gistcli.skel.Skel")
