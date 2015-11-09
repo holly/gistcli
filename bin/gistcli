@@ -50,12 +50,6 @@ fetch_parser.add_argument('--remote-name', '-O', action='store_true', help='writ
 fetch_parser.add_argument('--add-executable', '-x', action='store_true', help='add executable mode. enable --output or --remote-name option')
 fetch_parser.add_argument('--verbose', action='store_true', help='verbose output')
 
-exec_parser = subparsers.add_parser('exec', help='fetch help')
-exec_parser.add_argument('--user', '-u', action='store', metavar='USER', help='github your account name')
-exec_parser.add_argument('--auth-token', '-T', action='store', metavar='AUTH_TOKEN', help='your github api access token, if you want private gist')
-exec_parser.add_argument('--name', '-n', action='store', required=True, metavar='FILE_NAME', help='gist file name')
-exec_parser.add_argument('--verbose', action='store_true', help='verbose output')
-
 post_parser = subparsers.add_parser('post', help='post help')
 post_parser.add_argument('--auth-token', '-T', action='store', metavar='AUTH_TOKEN', help='your github api access token')
 post_parser.add_argument('--name', '-n', action='store', required=True, metavar='FILE_NAME', help='gist file name')
