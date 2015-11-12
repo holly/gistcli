@@ -8,28 +8,20 @@ gist command line interface
 ## help
 
 ```shell
-usage: gistcli delete [-h] [--user USER] [--auth-token AUTH_TOKEN] --id ID
-                      [--verbose]
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --user USER, -u USER  github your account name
-  --auth-token AUTH_TOKEN, -T AUTH_TOKEN
-                        your github api access token
-  --id ID, -I ID        gist id
-  --verbose             verbose output
-holly@phantom ~/gistcli/bin (feature/add-delete)*$ gistcli -h
-usage: gistcli [-h] [--version] {list,show,fetch,exec,post,delete} ...
+usage: gistcli [-h] [--version]
+               {list,show,fetch,show_from_name,fetch_from_name,post,delete}
+               ...
 
 gist command line interface
 
 positional arguments:
-  {list,show,fetch,exec,post,delete}
+  {list,show,fetch,show_from_name,fetch_from_name,post,delete}
                         sub-command help
     list                list help
     show                show help
     fetch               fetch help
-    exec                fetch help
+    show_from_name      show_from_name help
+    fetch_from_name     fetch_from_name help
     post                post help
     delete              delete help
 
@@ -82,10 +74,122 @@ aa18fd518be1205f2753    Check server                        Public    Text      
 
 ... and more ...
 ```
+
 ### show
 
 ```shell
-usage: gistcli show [-h] [--user USER] [--auth-token AUTH_TOKEN]
+usage: gistcli show [-h] [--auth-token AUTH_TOKEN] --id ID [--verbose]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --auth-token AUTH_TOKEN, -T AUTH_TOKEN
+                        your github api access token, if you want private gist
+  --id ID, -I ID        gist id
+  --verbose             verbose output
+```
+
+[check_drbd.sh](https://gist.github.com/holly/0b3c96d3795957bfb1f5 "check_drbd.sh")
+
+| option     | value       |
+|:-----------|:------------|
+| id         | 0b3c96d3795957bfb1f5 |
+| file name  | check_drbd.sh        |
+
+*execute*
+
+```shell
+$ gistcli show --id 0b3c96d3795957bfb1f5
+```
+
+*result*
+
+```shell
+##### check_drbd.sh #####
+#!/bin/bash
+
+EXIT_CODE=0
+
+STATUS_FILE=/tmp/drbd.status
+
+STATUS=$(sed -e 's/.* state:\(.*\)$/\1/' $STATUS_FILE)
+if [ "${STATUS}" != "MASTER" ]; then
+        echo "current status is ${STATUS}. skip"
+        exit
+fi
+
+DRBD_ROLE_STATUS=$(/sbin/drbdadm role r0 | cut -d '/' -f1)
+DRBD_DSTATE_STATUS=$(/sbin/drbdadm dstate r0 | cut -d '/' -f1)
+DRBD_CSTATE_STATUS=$(/sbin/drbdadm cstate r0)
+
+[ "${DRBD_ROLE_STATUS}" != "Primary" ] && EXIT_CODE=1
+#[ "${DRBD_DSTATE_STATUS}" != "UpToDate" ] && EXIT_CODE=2
+#[ "${DRBD_CSTATE_STATUS}" != "Connected" ] && EXIT_CODE=3
+
+echo "$(date +'%Y/%m/%d %H:%M:%S') check_drbd role:${DRBD_ROLE_STATUS} dstate:${DRBD_DSTATE_STATUS} cstate:${DRBD_CSTATE_STATUS} exit:${EXIT_CODE}" >> /tmp/check_drbd.log
+
+exit $EXIT_CODE
+```
+
+### fetch
+
+```shell
+usage: gistcli fetch [-h] [--auth-token AUTH_TOKEN] --id ID
+                     [--download-dir DOWNLOAD_DIR] [--type DOWNLOAD_TYPE]
+                     [--verbose]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --auth-token AUTH_TOKEN, -T AUTH_TOKEN
+                        your github api access token, if you want private gist
+  --id ID, -I ID        gist id
+  --download-dir DOWNLOAD_DIR, -d DOWNLOAD_DIR
+                        download directory
+  --type DOWNLOAD_TYPE, -t DOWNLOAD_TYPE
+                        gistfetch download type(default:git. other type are
+                        tarball and zip)
+  --verbose             verbose output
+```
+
+*execute*
+
+```shell
+$ gistcli fetch --id 0b3c96d3795957bfb1f5
+```
+
+*result*
+
+```shell
+$ ls -Al 0b3c96d3795957bfb1f5/
+total 12
+drwxrwxr-x 8 holly holly 152 Nov 12 17:05 .git
+-rw-rw-r-- 1 holly holly 743 Nov 12 17:05 check_drbd.sh
+-rw-rw-r-- 1 holly holly 614 Nov 12 17:05 ctrl_drbd.sh
+-rw-rw-r-- 1 holly holly 270 Nov 12 17:05 save_drbd_status.sh
+```
+
+*execute(type is tarball)*
+
+```shell
+$ gistcli fetch --id 0b3c96d3795957bfb1f5 -t tarball
+```
+
+*result*
+
+```shell
+$ ls -Al 0b3c96d3795957bfb1f5-bb8ef3979efab34ab9ed44d2edfa57944a7c9c24.tar.gz
+-rw-rw-r-- 1 holly holly 995 Nov 12 17:06 0b3c96d3795957bfb1f5-bb8ef3979efab34ab9ed44d2edfa57944a7c9c24.tar.gz
+
+$ tar tvfz 0b3c96d3795957bfb1f5-bb8ef3979efab34ab9ed44d2edfa57944a7c9c24.tar.gz
+drwxrwxr-x root/root         0 2015-06-28 22:27 0b3c96d3795957bfb1f5-bb8ef3979efab34ab9ed44d2edfa57944a7c9c24/
+-rw-rw-r-- root/root       743 2015-06-28 22:27 0b3c96d3795957bfb1f5-bb8ef3979efab34ab9ed44d2edfa57944a7c9c24/check_drbd.sh
+-rw-rw-r-- root/root       614 2015-06-28 22:27 0b3c96d3795957bfb1f5-bb8ef3979efab34ab9ed44d2edfa57944a7c9c24/ctrl_drbd.sh
+-rw-rw-r-- root/root       270 2015-06-28 22:27 0b3c96d3795957bfb1f5-bb8ef3979efab34ab9ed44d2edfa57944a7c9c24/save_drbd_status.sh
+```
+
+### show_from_name
+
+```shell
+usage: gistcli show_from_name [-h] [--user USER] [--auth-token AUTH_TOKEN]
                     [--no-headers] --name FILE_NAME [--verbose]
 
 optional arguments:
@@ -110,7 +214,7 @@ optional arguments:
 *execute*
 
 ```shell
-$ gistcli show -u holly -n check_drbd.sh
+$ gistcli show_from_name -u holly -n check_drbd.sh
 ```
 
 *result*
@@ -141,10 +245,10 @@ echo "$(date +'%Y/%m/%d %H:%M:%S') check_drbd role:${DRBD_ROLE_STATUS} dstate:${
 exit $EXIT_CODE
 ```
 
-### fetch 
+### fetch_from_name
 
 ```shell
-usage: gistcli fetch [-h] [--user USER] [--auth-token AUTH_TOKEN] --name
+usage: gistcli fetch_from_name [-h] [--user USER] [--auth-token AUTH_TOKEN] --name
                      FILE_NAME [--output FILE_NAME] [--remote-name]
                      [--add-executable] [--verbose]
 
