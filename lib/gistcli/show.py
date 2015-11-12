@@ -11,7 +11,7 @@ from gistcli.skel import Skel
 
 class Cli(Skel):
 
-    GIST_API_URL = 'https://api.github.com/gists/{0}'
+    GIST_API_URL         = 'https://api.github.com/gists/{0}'
 
     def execute(self):
 

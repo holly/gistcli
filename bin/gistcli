@@ -41,7 +41,8 @@ show_parser.add_argument('--verbose', action='store_true', help='verbose output'
 fetch_parser = subparsers.add_parser('fetch', help='fetch help')
 fetch_parser.add_argument('--auth-token', '-T', action='store', metavar='AUTH_TOKEN', help='your github api access token, if you want private gist')
 fetch_parser.add_argument('--id', '-I', action='store', required=True, metavar='ID', help='gist id')
-fetch_parser.add_argument('--download-dir', '-d', action='store', metavar='DOWNLOAD_DIR', help='gist pull download directory')
+fetch_parser.add_argument('--download-dir', '-d', action='store', metavar='DOWNLOAD_DIR', help='download directory')
+fetch_parser.add_argument('--type', '-t', action='store', default="git", metavar='DOWNLOAD_TYPE', choices=['git', 'tarball', 'zip'], help='gistfetch download type')
 fetch_parser.add_argument('--verbose', action='store_true', help='verbose output')
 
 show_from_name_parser = subparsers.add_parser('show_from_name', help='show_from_name help')
