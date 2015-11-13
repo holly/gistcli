@@ -29,12 +29,21 @@ class Cli(Skel):
         if self.args.private:
             public = False
 
-        payload = {
-                    "public": public,
-                    "files": {
-                            self.args.name: { "content": self.args.infile.read() }
-                        }
-                }
+        # make payload
+        payload = { "public": public }
+
+        if isinstance(self.args.infile, list):
+            # from file list
+            files= {}
+            for f in self.args.infile:
+                files[os.path.basename(f.name)] = { "content": f.read() }
+            payload["files"] = files
+        else:
+            # from stdin
+            if not self.args.name :
+                raise Exception("error: the following arguments are required: --name/-n")
+            payload["files"] = { self.args.name: { "content": self.args.infile.read() }}
+
         if self.args.description:
             payload["description"] = self.args.description
 
