@@ -93,6 +93,7 @@ def main():
         cli.verbose_message("\n=============\n{0}\n=============".format(traceback.format_exc()))
         sys.exit(1)
     else:
+        # success and final execution
         cli.verbose_message("gistcli.{0} success".format(args.subparser_name))
 
 if __name__ == "__main__":
