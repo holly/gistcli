@@ -17,7 +17,7 @@ import importlib
 import urllib
 
 __author__  = 'holly'
-__version__ = '0.3'
+__version__ = '0.4'
 
 DESCRIPTION = 'gist command line interface'
 
