@@ -17,7 +17,7 @@ import importlib
 import urllib
 
 __author__  = 'holly'
-__version__ = '0.3'
+__version__ = '0.4'
 
 DESCRIPTION = 'gist command line interface'
 
@@ -62,11 +62,11 @@ fetch_from_name_parser.add_argument('--verbose', action='store_true', help='verb
 
 post_parser = subparsers.add_parser('post', help='post help')
 post_parser.add_argument('--auth-token', '-T', action='store', metavar='AUTH_TOKEN', help='your github api access token')
-post_parser.add_argument('--name', '-n', action='store', required=True, metavar='FILE_NAME', help='gist file name')
+post_parser.add_argument('--name', '-n', action='store', metavar='FILE_NAME', help='gist file name')
 post_parser.add_argument('--description', '-d', action='store', metavar='DESCRIPTION', help='gist file description')
 post_parser.add_argument('--private', '-p', action='store_true', help='private gist')
 post_parser.add_argument('--verbose', action='store_true', help='verbose output')
-post_parser.add_argument('infile', type=FileType("r"), nargs="?", default=sys.stdin, metavar='INFILE', help='post target file or stdin data')
+post_parser.add_argument('infile', type=FileType("r"), nargs="*", default=sys.stdin, metavar='INFILE', help='post target file or stdin data')
 
 delete_parser = subparsers.add_parser('delete', help='delete help')
 delete_parser.add_argument('--auth-token', '-T', action='store', metavar='AUTH_TOKEN', help='your github api access token')
@@ -93,6 +93,7 @@ def main():
         cli.verbose_message("\n=============\n{0}\n=============".format(traceback.format_exc()))
         sys.exit(1)
     else:
+        # success and final execution
         cli.verbose_message("gistcli.{0} success".format(args.subparser_name))
 
 if __name__ == "__main__":
