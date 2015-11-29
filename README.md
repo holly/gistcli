@@ -9,13 +9,13 @@ gist command line interface
 
 ```shell
 usage: gistcli [-h] [--version]
-               {list,show,fetch,show_from_name,fetch_from_name,post,delete}
+               {list,show,fetch,show_from_name,fetch_from_name,post,update,delete}
                ...
 
 gist command line interface
 
 positional arguments:
-  {list,show,fetch,show_from_name,fetch_from_name,post,delete}
+  {list,show,fetch,show_from_name,fetch_from_name,post,update,delete}
                         sub-command help
     list                list help
     show                show help
@@ -23,11 +23,13 @@ positional arguments:
     show_from_name      show_from_name help
     fetch_from_name     fetch_from_name help
     post                post help
+    update              update help
     delete              delete help
 
 optional arguments:
   -h, --help            show this help message and exit
   --version, -v         show program's version number and exit
+
 ```
 
 
@@ -333,6 +335,45 @@ optional arguments:
 $ gistcli post -u holly -n test.txt <test.txt
 # or from file
 $ gistcli post -u holly -n test.txt test.txt
+```
+
+*result*
+```shell
+# unique id
+0b436445dbc534beca38
+```
+
+### update
+
+```shell
+usage: gistcli update [-h] [--auth-token AUTH_TOKEN] --id ID
+                      [--name FILE_NAME] [--description DESCRIPTION]
+                      [--private] [--verbose]
+                      [INFILE [INFILE ...]]
+
+positional arguments:
+  INFILE                update target file or stdin data
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --auth-token AUTH_TOKEN, -T AUTH_TOKEN
+                        your github api access token
+  --id ID, -I ID        gist id
+  --name FILE_NAME, -n FILE_NAME
+                        gist file name
+  --description DESCRIPTION, -d DESCRIPTION
+                        gist file description
+  --private, -p         private gist
+  --verbose             verbose output
+```
+
+*execute*
+
+```shell
+# from stdin
+$ gistcli update -u holly -n test.txt <test.txt
+# or from file
+$ gistcli update -u holly -n test.txt test.txt
 ```
 
 *result*
