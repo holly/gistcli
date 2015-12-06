@@ -8,20 +8,16 @@ gist command line interface
 ## help
 
 ```shell
-usage: gistcli [-h] [--version]
-               {list,show,fetch,show_from_name,fetch_from_name,post,update,delete}
-               ...
+usage: gistcli [-h] [--version] {list,show,fetch,post,update,delete} ...
 
 gist command line interface
 
 positional arguments:
-  {list,show,fetch,show_from_name,fetch_from_name,post,update,delete}
+  {list,show,fetch,post,update,delete}
                         sub-command help
     list                list help
     show                show help
     fetch               fetch help
-    show_from_name      show_from_name help
-    fetch_from_name     fetch_from_name help
     post                post help
     update              update help
     delete              delete help
@@ -29,7 +25,6 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   --version, -v         show program's version number and exit
-
 ```
 
 
@@ -186,99 +181,6 @@ drwxrwxr-x root/root         0 2015-06-28 22:27 0b3c96d3795957bfb1f5-bb8ef3979ef
 -rw-rw-r-- root/root       743 2015-06-28 22:27 0b3c96d3795957bfb1f5-bb8ef3979efab34ab9ed44d2edfa57944a7c9c24/check_drbd.sh
 -rw-rw-r-- root/root       614 2015-06-28 22:27 0b3c96d3795957bfb1f5-bb8ef3979efab34ab9ed44d2edfa57944a7c9c24/ctrl_drbd.sh
 -rw-rw-r-- root/root       270 2015-06-28 22:27 0b3c96d3795957bfb1f5-bb8ef3979efab34ab9ed44d2edfa57944a7c9c24/save_drbd_status.sh
-```
-
-### show_from_name
-
-```shell
-usage: gistcli show_from_name [-h] [--user USER] [--auth-token AUTH_TOKEN]
-                    [--no-headers] --name FILE_NAME [--verbose]
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --user USER, -u USER  github your account name
-  --auth-token AUTH_TOKEN, -T AUTH_TOKEN
-                        your github api access token, if you want private gist
-  --no-headers          print no header line at all
-  --name FILE_NAME, -n FILE_NAME
-                        gist file name
-  --verbose             verbose output
-```
-
-
-[check_drbd.sh](https://gist.github.com/holly/0b3c96d3795957bfb1f5 "check_drbd.sh")
-
-| option     | value       |
-|:-----------|:------------|
-| user       | holly       |
-| file name  | check_drbd.sh |
-
-*execute*
-
-```shell
-$ gistcli show_from_name -u holly -n check_drbd.sh
-```
-
-*result*
-
-```shell
-#!/bin/bash
-
-EXIT_CODE=0
-
-STATUS_FILE=/tmp/drbd.status
-
-STATUS=$(sed -e 's/.* state:\(.*\)$/\1/' $STATUS_FILE)
-if [ "${STATUS}" != "MASTER" ]; then
-        echo "current status is ${STATUS}. skip"
-        exit
-fi
-
-DRBD_ROLE_STATUS=$(/sbin/drbdadm role r0 | cut -d '/' -f1)
-DRBD_DSTATE_STATUS=$(/sbin/drbdadm dstate r0 | cut -d '/' -f1)
-DRBD_CSTATE_STATUS=$(/sbin/drbdadm cstate r0)
-
-[ "${DRBD_ROLE_STATUS}" != "Primary" ] && EXIT_CODE=1
-#[ "${DRBD_DSTATE_STATUS}" != "UpToDate" ] && EXIT_CODE=2
-#[ "${DRBD_CSTATE_STATUS}" != "Connected" ] && EXIT_CODE=3
-
-echo "$(date +'%Y/%m/%d %H:%M:%S') check_drbd role:${DRBD_ROLE_STATUS} dstate:${DRBD_DSTATE_STATUS} cstate:${DRBD_CSTATE_STATUS} exit:${EXIT_CODE}" >> /tmp/check_drbd.log
-
-exit $EXIT_CODE
-```
-
-### fetch_from_name
-
-```shell
-usage: gistcli fetch_from_name [-h] [--user USER] [--auth-token AUTH_TOKEN] --name
-                     FILE_NAME [--output FILE_NAME] [--remote-name]
-                     [--add-executable] [--verbose]
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --user USER, -u USER  github your account name
-  --auth-token AUTH_TOKEN, -T AUTH_TOKEN
-                        your github api access token, if you want private gist
-  --name FILE_NAME, -n FILE_NAME
-                        gist file name
-  --output FILE_NAME, -o FILE_NAME
-                        write to FILE instead of stdout
-  --remote-name, -O     write output to a file named as the remote file
-  --add-executable, -x  add executable mode. enable --output or --remote-name
-                        option
-  --verbose             verbose output
-```
-
-*execute*
-
-```shell
-$ gistcli fetch -u holly -n check_drbd.sh -O 
-```
-
-*result*
-```shell
-$ ls -Al check_drbd.sh
--rwxr-xr-x 1 holly holly 645 Sep 23 14:00 check_drbd.sh
 ```
 
 ### execute
