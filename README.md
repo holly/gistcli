@@ -403,6 +403,15 @@ optional arguments:
 $ gistcli delete -u holly --id 0b436445dbc534beca38
 ```
 
+## sub-command shortcut script
+
+* gistlist
+* gistshow
+* gistfetch
+* gistpost
+* gistupdate
+* gistdelete
+
 # install
 
 ## pip install
