@@ -13,7 +13,7 @@ class Cli(Skel):
     GIST_API_URL = 'https://api.github.com/users/%s/gists'
     # ex: <https://api.github.com/gists?page=4>; rel="next", <https://api.github.com/gists?page=100>; rel="last", <https://api.github.com/gists?page=1>; rel="first", <https://api.github.com/gists?page=2>; rel="prev"
     LINK_COMPILE_PETTERN = re.compile("^<(.*)>; rel=\"next\".*")
-    LINE_FORMAT = "{id:<24}{name:<36}{status:<10}{language:12}{created:<24}{updated}"
+    LINE_FORMAT = "{id:<36}{name:<36}{status:<10}{language:12}{created:<24}{updated}"
 
     def execute(self):
         
